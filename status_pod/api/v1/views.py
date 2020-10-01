@@ -1,7 +1,10 @@
-from status_pod.api.v1.blueprint import activity
+from flask import Blueprint
 
 
+activity = Blueprint('main', __name__, url_prefix='/main')
 
-@activity.route('/mock/response', methods=['POST'])
+
+@activity.route('/mock', methods=['GET'])
 def process_message():
+    print('hui')
     return '', 200
