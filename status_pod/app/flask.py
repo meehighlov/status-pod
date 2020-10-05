@@ -11,6 +11,4 @@ def create_app():
     app.url_map.strict_slashes = False
     app.register_blueprint(activity)
 
-    print(app.url_map)
-
     return app

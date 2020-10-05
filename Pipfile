@@ -13,6 +13,7 @@ marshmallow = "*"
 sqlalchemy = "*"
 python-dotenv = "*"
 gunicorn = "*"
+python-telegram-bot = "*"
 
 [requires]
 python_version = "3.8"
