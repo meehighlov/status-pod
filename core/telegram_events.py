@@ -9,7 +9,6 @@ token = os.getenv('TOKEN')
 
 updater = Updater(token=token, use_context=True)
 dispatcher = updater.dispatcher
-# queue = updater.job_queue
 
 
 def intro(update, context):
@@ -22,16 +21,11 @@ def reflector(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
 
 
-def callback(context):
-    context.bot.send_message(chat_id='69528108',
-                             text='notification')
-
 
 
 start_handler = CommandHandler('start', intro)
 message_handler = MessageHandler(Filters.text & (~Filters.command), reflector)
 
-# job_minute = queue.run_repeating(callback, interval=10, first=0)
 
 dispatcher.add_handler(start_handler)
 dispatcher.add_handler(message_handler)

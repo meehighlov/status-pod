@@ -21,4 +21,4 @@ def init_db(db_name):
 
 
 
-db = init_db('temporary.db')
+db = init_db('temporary.persistant')
