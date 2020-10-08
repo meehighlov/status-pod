@@ -2,6 +2,8 @@ import sqlite3
 
 from collections import namedtuple
 
+from core.config import config
+
 
 def create_tables(cursor):
     cursor.execute(
@@ -17,8 +19,9 @@ def init_db(db_name):
     create_tables(cursor)
     connection.commit()
     db = namedtuple('DB', 'connection cursor')
+    connection.close()
+    print('db initialized')
     return db(connection=connection, cursor=cursor)
 
 
-
-db = init_db('temporary.persistant')
+db = init_db(config.DB_NAME)
