@@ -7,7 +7,7 @@ updater = Updater(token=config.TOKEN, use_context=True)
 dispatcher = updater.dispatcher
 
 
-def intro(update, context):
+def start_command(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="That's where the fun begins")
 
 
@@ -17,7 +17,7 @@ def register_handlers(handlers, dispatcher):
 
 
 handlers_ = [
-    CommandHandler('start', intro),
+    CommandHandler('start', start_command),
     *handlers
 ]
 
