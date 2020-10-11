@@ -1,6 +1,7 @@
 import sqlite3
 
 from core.config import config
+from datetime import date
 
 
 def save_payment(update, context):
@@ -12,21 +13,23 @@ def save_payment(update, context):
         return
     connection = sqlite3.connect(config.DB_NAME)
     cursor = connection.cursor()
-    cursor.execute('''insert into payments values (?, ?, ?);''', (item, cost, 'today'))
+    cursor.execute(
+        '''insert into payments values (?, ?, ?);''', (
+            item,
+            cost,
+            date.today().strftime("%d.%m.%Y")
+        )
+    )
     connection.commit()
     connection.close()
     context.bot.send_message(chat_id=update.effective_chat.id, text='saved')
 
 
 def get_all_payments_by_date(update, context):
-    try:
-        date = context.args
-    except ValueError:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text='syntax error'
-        )
-        return
+    date = context.args
+    # TODO check date format
+    if not date:
+        pass  # TODO
     connection = sqlite3.connect(config.DB_NAME)
     cursor = connection.cursor()
     cursor.execute('''select * from payments where date = ?;''', date)
