@@ -11,6 +11,11 @@ def create_tables(cursor):
             create table if not exists payments (item text, price real, date text);
         '''
     )
+    cursor.execute(
+        '''
+            create table if not exists payments (item text, price real, date text);
+        '''
+    )
 
 
 def init_db(db_name):

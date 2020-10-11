@@ -7,6 +7,9 @@ updater = Updater(token=config.TOKEN, use_context=True)
 dispatcher = updater.dispatcher
 
 
+# TODO AUTH!
+
+
 def start_command(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="That's where the fun begins")
 
