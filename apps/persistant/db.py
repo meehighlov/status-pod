@@ -5,12 +5,11 @@ from collections import namedtuple
 from core.config import config
 
 
+#TODO make things better with that
+#TODO i don't like how it works now
+
+
 def create_tables(cursor):
-    cursor.execute(
-        '''
-            create table if not exists payments (item text, price real, date text);
-        '''
-    )
     cursor.execute(
         '''
             create table if not exists payments (item text, price real, date text);
