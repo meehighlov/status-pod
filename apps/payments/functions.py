@@ -59,6 +59,7 @@ def set_amount_of_money_for_spending_per_day(update, context):
 @db_connection
 def get_payments_stat_for_period(update, context, db):
     # period format:
+    # t - today
     # w - last week (today inclusive)
     # m - last month
     # y - last year
@@ -66,6 +67,7 @@ def get_payments_stat_for_period(update, context, db):
     period = context.args  # TODO validation
 
     letter_to_date_map = {
+        't': (date.today(), date.today()),
         'w': (date.today() - datetime.timedelta(days=7), date.today()),
         'm': (date.today() - datetime.timedelta(days=30), date.today()),  # what about february?
         'y': (date.today() - datetime.timedelta(days=365), date.today())  # what about 366?
