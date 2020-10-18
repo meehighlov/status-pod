@@ -50,8 +50,6 @@ def get_all_payments_by_date(update, context, db):
     db.cursor.execute('''select * from payments where date = ?;''', date[0])
     data = db.cursor.fetchall()
 
-    # TODO prepare output!
-
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=prepare_payments_list_for_output(data, date)
@@ -102,7 +100,6 @@ def get_payments_stat_for_period(update, context, db):
 
     data = db.cursor.fetchall()
 
-    #TODO prepare output!
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=prepare_payments_list_for_output(data, f'{a} to {b}')
