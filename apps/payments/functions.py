@@ -4,9 +4,20 @@ from apps.persistant.db import db_connection
 from datetime import date
 
 
-#TODO make decorators for work with db -> a lot of code repetitions
-#TODO also add to decorator: checking type of update and context variables -
+#TODO also add decorator: checking type of update and context variables -
 # is they instances of classes that we waiting for; or simply add type hinting
+
+
+def prepare_payments_list_for_output(payments: list, pay_date: str = '') -> str:
+    if not payments:
+        return 'empty payments list'
+    output_string = f'payments for period: {pay_date or "))))))"}\n\n'
+    spent_total = 0.0
+    for payment, cost, _ in payments:
+        output_string += f'{payment} {cost}\n'
+        spent_total += cost
+    output_string += '\n' + f'spent total (RUB): {spent_total}'
+    return output_string
 
 
 @db_connection
@@ -36,13 +47,14 @@ def get_all_payments_by_date(update, context, db):
 
     # TODO make decorator for that purpose
 
-    db.cursor.execute('''select * from payments where date = ?;''', date)
+    db.cursor.execute('''select * from payments where date = ?;''', date[0])
     data = db.cursor.fetchall()
 
     # TODO prepare output!
+
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text=f'{data}'
+        text=prepare_payments_list_for_output(data, date)
     )
 
 
@@ -93,7 +105,7 @@ def get_payments_stat_for_period(update, context, db):
     #TODO prepare output!
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text=f'{data}'
+        text=prepare_payments_list_for_output(data, f'{a} to {b}')
     )
 
 
@@ -103,5 +115,5 @@ def get_all_payments_data(update, context, db):  # ONLY FOR DEBUGGING! could be 
     data = db.cursor.fetchall()
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text=f'{data}'
+        text=prepare_payments_list_for_output(data, 'all time')
     )
