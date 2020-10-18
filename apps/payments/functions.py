@@ -11,6 +11,7 @@ from datetime import date
 def prepare_payments_list_for_output(payments: list, pay_date: str = '') -> str:
     if not payments:
         return 'empty payments list'
+    # TODO change date format: dd.mm.Y
     output_string = f'payments for period: {pay_date or "))))))"}\n\n'
     spent_total = 0.0
     for payment, cost, _ in payments:
