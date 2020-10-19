@@ -1,6 +1,6 @@
 import datetime
 
-from apps.persistant.db import db_connection
+from persistant.db import db_connection
 from datetime import date
 
 
