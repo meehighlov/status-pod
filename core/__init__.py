@@ -2,6 +2,8 @@ from core.config import config
 from apps.handlers import handlers
 from telegram.ext import Updater
 
+from notifications.functions import create_notifications
+
 
 def init_bot():
     updater = Updater(token=config.TOKEN, use_context=True)
@@ -11,6 +13,8 @@ def init_bot():
 
     for handler in handlers:
         dispatcher.add_handler(handler)
+
+    create_notifications(updater.job_queue)
 
     updater.start_polling()
     updater.idle()
