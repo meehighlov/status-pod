@@ -2,10 +2,11 @@
     read tasks from db and then create schedules
 
     WARNING: hardcoded notification
+    TODO make read from file
     TODO make it changeable from interface
 """
 from core import config
-
+from core.utils import strip_none_params
 
 
 def repeating_notification(job_queue, *args):
@@ -17,7 +18,7 @@ def run_once_notification(job_queue, *args):
 
 
 
-notification_messages_list = {
+notifications = {
     'rent': {
         'message': 'Rent time!',
         'schedule_function': repeating_notification,
@@ -39,12 +40,14 @@ def notification_fabric(message):
 
 
 def create_notifications(job_queue):
-    for _, data in notification_messages_list.items():
+    for _, data in notifications.items():
         launch = data['schedule_function']
         notification = notification_fabric(data['message'])
         launch(
             job_queue,
-            notification,
-            data['seconds'],
-            data.get('start_from_seconds')
+            *strip_none_params(
+                notification,
+                data.get('seconds'),
+                data.get('start_from_seconds')
+            )
         )

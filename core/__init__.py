@@ -5,6 +5,9 @@ from telegram.ext import Updater
 from notifications.functions import create_notifications
 
 
+# TODO Error handling
+
+
 def init_bot():
     updater = Updater(token=config.TOKEN, use_context=True)
     dispatcher = updater.dispatcher
