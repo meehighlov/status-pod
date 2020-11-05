@@ -2,7 +2,7 @@ from core.config import config
 from apps.handlers import handlers
 from telegram.ext import Updater
 
-from notifications.functions import create_notifications
+from notifications.center import create_notifications
 
 
 # TODO Error handling
