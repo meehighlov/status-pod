@@ -21,31 +21,31 @@ notifications = {
     'rent': {
         'message': 'Rent time!',
         'schedule_function': repeating_notification,
-        'seconds': get_seconds_by_days(days=28),
+        'interval': get_seconds_by_days(days=28),
         'start_from_seconds': 0
     },
     'additional_rent': {
         'message': 'Check mail box downstairs',
         'schedule_function': repeating_notification,
-        'seconds': get_seconds_by_days(days=14),
+        'interval': get_seconds_by_days(days=14),
         'start_from_seconds': 1
     },
     'phone': {
         'message': 'Are you still in connection? Check balance on the phone',
         'schedule_function': repeating_notification,
-        'seconds': get_seconds_by_days(days=21),
+        'interval': get_seconds_by_days(days=21),
         'start_from_seconds': 2
     },
     'internet': {
         'message': 'Check the internet access',
         'schedule_function': repeating_notification,
-        'seconds': get_seconds_by_days(days=21),
+        'interval': get_seconds_by_days(days=21),
         'start_from_seconds': 3
     },
     'haircut': {
         'message': 'Do you need refresh your haircut?',
         'schedule_function': repeating_notification,
-        'seconds': get_seconds_by_days(days=21),
+        'interval': get_seconds_by_days(days=21),
         'start_from_seconds': 4
     }
 }
@@ -70,7 +70,21 @@ def create_notifications(job_queue):
             job_queue,
             *strip_none_params(
                 notification,
-                data.get('seconds'),
+                data.get('interval'),
                 data.get('start_from_seconds')
             )
         )
+
+
+tasks = {
+    'rent': {
+        'message': 'Rent time!',
+        'datetime': '',
+    }
+}
+
+
+
+def periodical_task_checker():
+    pass
+
