@@ -1,5 +1,5 @@
 def strip_none_params(*args):
-    return [param for param in args if param is not None]
+    return (param for param in args if param is not None)
 
 
 def get_seconds_by_days(days):

@@ -5,8 +5,11 @@
     TODO make read from file
     TODO make it changeable from interface
 """
+import datetime
+
 from core import config
 from core.utils import strip_none_params, get_seconds_by_days
+
 
 
 def repeating_notification(job_queue, *args):
@@ -20,34 +23,35 @@ def run_once_notification(job_queue, *args):
 notifications = {
     'rent': {
         'message': 'Rent time!',
+        'repeat_times': 3,
         'schedule_function': repeating_notification,
-        'interval': get_seconds_by_days(days=28),
-        'start_from_seconds': 0
+        'interval': datetime.timedelta(seconds=2),
+        'first': datetime.datetime.strptime('15.11.2020', '%d.%m.%Y')
     },
-    'additional_rent': {
-        'message': 'Check mail box downstairs',
-        'schedule_function': repeating_notification,
-        'interval': get_seconds_by_days(days=14),
-        'start_from_seconds': 1
-    },
-    'phone': {
-        'message': 'Are you still in connection? Check balance on the phone',
-        'schedule_function': repeating_notification,
-        'interval': get_seconds_by_days(days=21),
-        'start_from_seconds': 2
-    },
-    'internet': {
-        'message': 'Check the internet access',
-        'schedule_function': repeating_notification,
-        'interval': get_seconds_by_days(days=21),
-        'start_from_seconds': 3
-    },
-    'haircut': {
-        'message': 'Do you need refresh your haircut?',
-        'schedule_function': repeating_notification,
-        'interval': get_seconds_by_days(days=21),
-        'start_from_seconds': 4
-    }
+    # 'additional_rent': {
+    #     'message': 'Check mail box downstairs',
+    #     'schedule_function': repeating_notification,
+    #     'interval': get_seconds_by_days(days=14),
+    #     'first': 1
+    # },
+    # 'phone': {
+    #     'message': 'Are you still in connection? Check balance on the phone',
+    #     'schedule_function': repeating_notification,
+    #     'interval': get_seconds_by_days(days=21),
+    #     'first': 2
+    # },
+    # 'internet': {
+    #     'message': 'Check the internet access',
+    #     'schedule_function': repeating_notification,
+    #     'interval': get_seconds_by_days(days=21),
+    #     'first': 3
+    # },
+    # 'haircut': {
+    #     'message': 'Do you need refresh your haircut?',
+    #     'schedule_function': repeating_notification,
+    #     'interval': get_seconds_by_days(days=21),
+    #     'first': 4
+    # }
 }
 
 
@@ -71,7 +75,7 @@ def create_notifications(job_queue):
             *strip_none_params(
                 notification,
                 data.get('interval'),
-                data.get('start_from_seconds')
+                data.get('first')
             )
         )
 
