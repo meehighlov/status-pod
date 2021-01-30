@@ -15,7 +15,7 @@
     main (still have questions):
 
     TODO - ask about it
-    to tell the user that with the same spending user still in his budget (or not) for specified date
+    to tell the user that with the same spending user still in his budget (or not) for specified date (?)
 
     advantage:
 
