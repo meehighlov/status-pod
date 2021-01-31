@@ -7,6 +7,9 @@
         - txt file
         - message
 """
+
+# TODO сделать под это все тесты
+
 import typing as t
 import csv
 
@@ -43,11 +46,10 @@ def get_headers(r: iter) -> t.List[t.Optional[t.List]]:
 def get_index_position_in_headers(index: str, headers: t.List[t.List]):
     # так как хедеров не один (сейчас 2) - ищем наш индекс в каждом из них
     for header in headers:
-        if index in header:
-            try:
-                return header.index(index)
-            except ValueError:
-                continue
+        try:
+            return header.index(index)
+        except ValueError:
+            continue
     return None
 
 
@@ -60,14 +62,16 @@ def map_index_to_its_position(indexes: t.Set[str], headers: t.List[t.List]):
 
 def check_index_names_and_get_known(indexes: t.List[str], headers: t.List[t.List], silent=False):
     all_headers = set(chain.from_iterable(headers))
-    indexes_ = set(indexes)
-    known = all_headers & indexes_
-    unknown = indexes_ - known
+    indexes = set(indexes)
+    if not indexes:
+        indexes = all_headers
+    known = all_headers & indexes
+    unknown = indexes - known
     if unknown:
         if silent:
             # если не поднимаем исключение, то проверяем, есть ли что вернуть
             if known:
-                # TODO логировать то, что индекс будет строится по только известным заголовкам
+                # TODO логировать то, что индекс будет строиться по только известным заголовкам
                 return known
         raise LoadFinancesError(f'Unknown header names: {unknown}')
     return known
@@ -75,6 +79,8 @@ def check_index_names_and_get_known(indexes: t.List[str], headers: t.List[t.List
 
 def build_index_on_raw_file_data(path, indexes: t.List[str] = None):
     # TODO make index names case insensitive
+    # TODO нужно поменять сигнатуру этой функции - чтение будет из байтов
+    # TODO также нужно убрать чтение из файла, либо просто добавить еще одну функцию - чтения байтов
     indexes = [] if not indexes else indexes
     index = defaultdict(list)
     with open(path) as f:
