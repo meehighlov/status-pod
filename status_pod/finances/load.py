@@ -11,6 +11,9 @@ import typing as t
 import csv
 
 from collections import defaultdict
+from itertools import chain
+
+from status_pod.app.exceptions import LoadFinancesError
 
 
 def get_raw_file_data_as_matrix(path):
@@ -25,7 +28,7 @@ def get_headers(r: iter) -> t.List[t.Optional[t.List]]:
     WARNING: modifies r
 
     retrieves headers from file
-    for building index
+    for building index by them
 
     current file format assumed 2 first lines as headers
     """
@@ -48,11 +51,26 @@ def get_index_position_in_headers(index: str, headers: t.List[t.List]):
     return None
 
 
-def map_index_to_its_position(indexes: t.List[str], headers: t.List[t.List]):
+def map_index_to_its_position(indexes: t.Set[str], headers: t.List[t.List]):
     return {
         index: get_index_position_in_headers(index, headers)
         for index in indexes
     }
+
+
+def check_index_names_and_get_known(indexes: t.List[str], headers: t.List[t.List], silent=False):
+    all_headers = set(chain.from_iterable(headers))
+    indexes_ = set(indexes)
+    known = all_headers & indexes_
+    unknown = indexes_ - known
+    if unknown:
+        if silent:
+            # если не поднимаем исключение, то проверяем, есть ли что вернуть
+            if known:
+                # TODO логировать то, что индекс будет строится по только известным заголовкам
+                return known
+        raise LoadFinancesError(f'Unknown header names: {unknown}')
+    return known
 
 
 def build_index_on_raw_file_data(path, indexes: t.List[str] = None):
@@ -62,6 +80,7 @@ def build_index_on_raw_file_data(path, indexes: t.List[str] = None):
     with open(path) as f:
         rows = csv.reader(f)
         headers = get_headers(rows)
+        indexes = check_index_names_and_get_known(indexes, headers, silent=True)
         index_to_position = map_index_to_its_position(indexes, headers)
         for row in rows:
             for index_ in indexes:
