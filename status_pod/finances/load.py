@@ -120,4 +120,3 @@ path = '/Users/ivanmikhailov/Downloads/Таблица для бота - Бюдж
 d, h = build_index_on_raw_file_data(path, ['Дата'])
 for h_ in h:
     print(h_, ':', d['05.02.2020'][h_])
-# .replace('\xa0', '').replace(' ₽', '') - хз поможет ли это, когда числа в экселике будут еще больше

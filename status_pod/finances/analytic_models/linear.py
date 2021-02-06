@@ -23,10 +23,14 @@
     2 highlight when any category drops rest down to specified_minimum
 """
 from abc import abstractmethod
+from datetime import datetime
 from status_pod.app.exceptions import SpendingAnalyticsAlgorithmError
+from status_pod.finances.analytic_models.utils import process_number_from_table
 
 
 class BaseAlgorithm:
+
+    _date_format = '%d.%m.%Y'  # формат даты в таблице
 
     def __init__(self, *args, **kwargs):
         self.data = kwargs['data']  # обязательный аргумент
@@ -48,7 +52,7 @@ class BaseAlgorithm:
         try:
             meta = {*meta[0], *meta[1]}
         except (TypeError, IndexError):
-            raise SpendingAnalyticsAlgorithmError('meta data is incorrect format')
+            raise SpendingAnalyticsAlgorithmError('meta data has incorrect format')
 
         return meta
 
@@ -102,3 +106,18 @@ class Linear(BaseAlgorithm):
 
     def spend_by_period_by_all_categories(self, date_begin: str, date_end: str):
         pass
+
+    def _get_spending_categories(self):
+        """функция получения категорий, по которым происходя траты"""
+        return []
+
+    def get_rest_for_today(self):
+        spending_categories = self._get_spending_categories()
+        today = datetime.today().strftime(self._date_format)
+        info = self._get_info_from_data(index=today)
+        category_to_spend_map = {
+            category: process_number_from_table(info[category])
+            for category in spending_categories
+        }
+
+
