@@ -4,3 +4,7 @@ class AppError(Exception):
 
 class LoadFinancesError(AppError):
     pass
+
+
+class SpendingAnalyticsAlgorithmError(AppError):
+    pass
