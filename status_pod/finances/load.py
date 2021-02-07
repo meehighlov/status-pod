@@ -120,4 +120,4 @@ def build_index_on_raw_file_data(path, indexes: t.List[str] = None):
 path = '/Users/ivanmikhailov/Downloads/Таблица для бота - Бюджет v2.0 (копия).csv'
 d, h = build_index_on_raw_file_data(path, ['Дата'])
 from pprint import pprint
-pprint(list(h))
+pprint(d['05.02.2020']['Дата'])

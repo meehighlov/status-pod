@@ -1,43 +1,44 @@
-"""
-    будем ассоциировать таблицу в экселе с дата классом
-    (возможно в дальнейшем и с таблицей в БД)
-"""
-from functools import partial
-from status_pod.finances.analytic_models.utils import process_number_from_table, string_to_datetime
+from contextlib import suppress
+from datetime import datetime
+
+from status_pod.finances.analytic_models.utils import process_number_from_table
 
 
 class TableRow:
 
     _datetime_format = '%d.%m.%Y'
 
-    @property
-    def __type_funcs(self):
-        return [
-            process_number_from_table,
-            partial(string_to_datetime, fmt=self._datetime_format),
-            str
-        ]
-
     def __init__(self, attrs: dict):
         self.__attrs = attrs
 
-    def __getattribute__(self, item):
-        return self.__attrs.get(item)
+    @property
+    def attrs(self):
+        return self.__attrs
 
-    def __setattr__(self, key, value):
-        if key not in self.__attrs:
-            return
-        self.__attrs[key] = value
+    def __contains__(self, item):
+        # TODO case insensitive
+        return item in self.__attrs
 
     def __getitem__(self, item):
-        return self.__attrs.get(item)
+        # TODO case insensitive
+        # TODO постоянно такое дергать - может быть накладно, надо оптимизировать
+        return self.__process_value(self.__attrs[item])
 
-    def process_value(self, attr):
-        value = self[attr]
-        try:
-            value_ = value
-            for type_f in self._type_funcs:
-                value_ = type_f(value)
-            return value_
-        except (ValueError, TypeError):
-            pass
+    def __setitem__(self, key, value):
+        # TODO case insensitive
+        self.__attrs[key] = value
+
+    def __str__(self):
+        return str(self.__attrs)
+
+    def to_datetime(self, value: str):
+        return datetime.strptime(value, self._datetime_format)
+
+    def to_float(self, value: str):
+        return process_number_from_table(value)
+
+    def __process_value(self, value: str):
+        for f in [self.to_datetime, self.to_float]:
+            with suppress(TypeError, ValueError):
+                value = f(value)
+        return value
