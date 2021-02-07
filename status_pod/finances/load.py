@@ -17,6 +17,7 @@ from collections import defaultdict
 from itertools import chain
 
 from status_pod.app.exceptions import LoadFinancesError
+from status_pod.finances.analytic_models.meta import TableRow
 
 
 def get_raw_file_data_as_matrix(path):
@@ -83,10 +84,10 @@ def check_index_names_and_get_known(indexes: t.List[str], headers: t.List[t.List
 
 
 def process_row(row: t.List[str], name_to_position: dict):
-    return {
+    return TableRow(attrs={
         name: row[pos]
         for name, pos in name_to_position.items()
-    }
+    })
 
 
 def build_index_on_raw_file_data(path, indexes: t.List[str] = None):

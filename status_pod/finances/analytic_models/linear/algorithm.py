@@ -70,6 +70,10 @@ class BaseAlgorithm:
     def _build_analysis(self, *args, **kwargs):
         pass
 
+    @abstractmethod
+    def _check_rest_for_date(self, date: str, budget: float):
+        pass
+
     def _get_info_from_data(self, index: str, column: str = None, allow_multiple_results=False):
         try:
             data = self.data[index]
@@ -100,24 +104,27 @@ class Linear(BaseAlgorithm):
     def _build_analysis(self):
         return self.data
 
+    def _check_rest_for_date(self, date: str, desired_budget: float):
+        """
+        :param date: дата для которой мы проверяем бюджет
+        :param desired_budget: сумма денег, в которую мы хотим попасть на дату date
+        :return:
+        """
+        date_ = datetime.strptime(date, self._date_format)
+        today_ = datetime.today()
+        if date_ <= today_:
+            raise SpendingAnalyticsAlgorithmError(
+                'Why you cant analyse it by your own?'
+                ' Specified date have to be > than today'
+            )
+
+        today = today_.strftime(self._date_format)
+        data = self._get_info_from_data(index=today)
+
+
     def spend_by_period_by_category(self, date_begin: str, date_end: str, category: str):
         self._check_column(category)
         pass
 
     def spend_by_period_by_all_categories(self, date_begin: str, date_end: str):
         pass
-
-    def _get_spending_categories(self):
-        """функция получения категорий, по которым происходя траты"""
-        return []
-
-    def get_rest_for_today(self):
-        spending_categories = self._get_spending_categories()
-        today = datetime.today().strftime(self._date_format)
-        info = self._get_info_from_data(index=today)
-        category_to_spend_map = {
-            category: process_number_from_table(info[category])
-            for category in spending_categories
-        }
-
-
