@@ -13,7 +13,6 @@
 import typing as t
 import csv
 
-from collections import defaultdict
 from itertools import chain
 
 from status_pod.app.exceptions import LoadFinancesError
@@ -91,12 +90,6 @@ def process_row(row: t.List[str], name_to_position: dict):
 
 
 def build_index_on_raw_file_data(path, indexes: t.List[str] = None):
-    """
-    бахаем индекс только по уникальным значениям
-    потому что так проще и эффективнее работать с данными
-
-    понадобится больше значений под индексом - раскоментирую соответствующие строки
-    """
     # TODO make index names case insensitive
     # TODO нужно поменять сигнатуру этой функции - чтение будет из байтов
     # TODO также нужно убрать чтение из файла, либо просто добавить еще одну функцию - чтения байтов
@@ -112,6 +105,7 @@ def build_index_on_raw_file_data(path, indexes: t.List[str] = None):
         for row in rows:
             for index_ in indexes:
                 pos = name_to_position[index_]
+                # для хранения нескольких значений под индексом:
                 # index[row[pos]].append(process_row(row, name_to_position_for_rows))
                 index[row[pos]] = process_row(row, name_to_position_for_rows)
     return index, filter(lambda x: x != '', flatten_headers(headers))
