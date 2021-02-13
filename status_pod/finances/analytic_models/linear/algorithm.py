@@ -24,6 +24,7 @@
 """
 from abc import abstractmethod
 from datetime import datetime
+from datetime import timedelta
 from status_pod.app.exceptions import SpendingAnalyticsAlgorithmError
 from status_pod.finances.analytic_models.utils import process_number_from_table
 
@@ -74,23 +75,22 @@ class BaseAlgorithm:
     def _check_rest_for_date(self, date: str, budget: float):
         pass
 
-    def _get_info_from_data(self, index: str, column: str = None, allow_multiple_results=False):
+    def _get_info_from_data(self, index: str, column: str = None):
+        """
+        Будет работать толкьо в случае,
+        если индекс строится для уникальных значений, например для даты
+        :param index: индекс (имя столбца)
+        :param column: имя столбца, по которому нужно достать данные, из полученного набора по индексу
+        :return:
+        """
         try:
             data = self.data[index]
-            if isinstance(data, list):
-                # нашли несколько результатов - индекс неуникален в столбце
-                if allow_multiple_results:
-                    if column:
-                        self._check_column(column)
-                        return [datum[column] for datum in data]
-                    return data
-                raise SpendingAnalyticsAlgorithmError(f'multiple results found by index {index}')
             if column:
                 self._check_column(column)
                 return data[column]
             return data
         except KeyError:
-            raise SpendingAnalyticsAlgorithmError(f'data was not build for index {index}')
+            raise SpendingAnalyticsAlgorithmError(f'unknown column or index {column, index}')
 
 
 class Linear(BaseAlgorithm):
@@ -104,27 +104,36 @@ class Linear(BaseAlgorithm):
     def _build_analysis(self):
         return self.data
 
-    def _check_rest_for_date(self, date: str, desired_budget: float):
+    def _check_rest_for_date(self, date: str, desired_budget: float) -> bool:
         """
         :param date: дата для которой мы проверяем бюджет
         :param desired_budget: сумма денег, в которую мы хотим попасть на дату date
-        :return:
+        :return: True - укладываемся в бюджет на укаазнную дату при учете,
+        что траты не будут превышать траты на текущий день, False - иначе
         """
         date_ = datetime.strptime(date, self._date_format)
         today_ = datetime.today()
         if date_ <= today_:
             raise SpendingAnalyticsAlgorithmError(
                 'Why you cant analyse it by your own?'
-                ' Specified date have to be > than today'
+                ' Specified date has to be > than today'
             )
 
         today = today_.strftime(self._date_format)
-        data = self._get_info_from_data(index=today)
+        today_data = self._get_info_from_data(index=today)
+        if today_data is None:
+            raise SpendingAnalyticsAlgorithmError(f'Not found data for today - {today_data}')
 
+        expense = today_data['Расход тотал']  # TODO не хардкодить этот ключ
+        days_amount = (date_ - today_).days
 
-    def spend_by_period_by_category(self, date_begin: str, date_end: str, category: str):
+        if desired_budget <= expense * days_amount:
+            return True
+        return False
+
+    def spend_in_period_by_category(self, date_begin: str, date_end: str, category: str):
         self._check_column(category)
         pass
 
-    def spend_by_period_by_all_categories(self, date_begin: str, date_end: str):
+    def spend_in_period_by_all_categories(self, date_begin: str, date_end: str):
         pass
