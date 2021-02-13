@@ -122,7 +122,7 @@ class Linear(BaseAlgorithm):
         today = today_.strftime(self._date_format)
         today_data = self._get_info_from_data(index=today)
         if today_data is None:
-            raise SpendingAnalyticsAlgorithmError(f'Not found data for today - {today_data}')
+            raise SpendingAnalyticsAlgorithmError(f'Not found data for today: {today}')
 
         expense = today_data['Расход тотал']  # TODO не хардкодить этот ключ
         days_amount = (date_ - today_).days

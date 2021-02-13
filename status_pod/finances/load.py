@@ -109,9 +109,3 @@ def build_index_on_raw_file_data(path, indexes: t.List[str] = None):
                 # index[row[pos]].append(process_row(row, name_to_position_for_rows))
                 index[row[pos]] = process_row(row, name_to_position_for_rows)
     return index, filter(lambda x: x != '', flatten_headers(headers))
-
-
-path = '/Users/ivanmikhailov/Downloads/Таблица для бота - Бюджет v2.0 (копия).csv'
-d, h = build_index_on_raw_file_data(path, ['Дата'])
-from pprint import pprint
-pprint(d['05.02.2020']['Дата'])
