@@ -71,7 +71,7 @@ class BaseAlgorithm:
         pass
 
     @abstractmethod
-    def _get_rest_for_date(self, date: str):
+    def get_rest_for_date(self, date: str):
         pass
 
     def _get_info_from_data(self, index: str, column: str = None):
@@ -103,7 +103,7 @@ class Linear(BaseAlgorithm):
     def _build_analysis(self):
         return self.data
 
-    def _get_rest_for_date(self, date: str) -> float:
+    def get_rest_for_date(self, date: str) -> float:
         """
         :param date: дата для которой мы проверяем бюджет
         :return: actual_rest
