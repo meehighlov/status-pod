@@ -127,6 +127,7 @@ class Linear(BaseAlgorithm):
         expense = today_data['Расход тотал']  # TODO не хардкодить этот ключ
         days_amount = (date_ - today_).days
 
+        # TODO учитывать приход + остаток
         if desired_budget <= expense * days_amount:
             return True
         return False
