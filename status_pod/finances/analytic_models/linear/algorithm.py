@@ -24,9 +24,8 @@
 """
 from abc import abstractmethod
 from datetime import datetime
-from datetime import timedelta
 from status_pod.app.exceptions import SpendingAnalyticsAlgorithmError
-from status_pod.finances.analytic_models.utils import process_number_from_table
+from functools import reduce
 
 
 class BaseAlgorithm:
@@ -72,7 +71,7 @@ class BaseAlgorithm:
         pass
 
     @abstractmethod
-    def _check_rest_for_date(self, date: str, budget: float):
+    def _get_rest_for_date(self, date: str):
         pass
 
     def _get_info_from_data(self, index: str, column: str = None):
@@ -104,12 +103,10 @@ class Linear(BaseAlgorithm):
     def _build_analysis(self):
         return self.data
 
-    def _check_rest_for_date(self, date: str, desired_budget: float) -> bool:
+    def _get_rest_for_date(self, date: str) -> float:
         """
         :param date: дата для которой мы проверяем бюджет
-        :param desired_budget: сумма денег, в которую мы хотим попасть на дату date
-        :return: True - укладываемся в бюджет на укаазнную дату при учете,
-        что траты не будут превышать траты на текущий день, False - иначе
+        :return: actual_rest
         """
         date_ = datetime.strptime(date, self._date_format)
         today_ = datetime.today()
@@ -125,12 +122,13 @@ class Linear(BaseAlgorithm):
             raise SpendingAnalyticsAlgorithmError(f'Not found data for today: {today}')
 
         expense = today_data['Расход тотал']  # TODO не хардкодить этот ключ
-        days_amount = (date_ - today_).days
+        rest = today_data['Остаток']  # TODO не хардкодить этот ключ
+        income = today_data['Доход']  # TODO не хардкодить этот ключ
 
-        # TODO учитывать приход + остаток
-        if desired_budget <= expense * days_amount:
-            return True
-        return False
+        days_amount = (date_ - today_).days
+        funcs = [lambda r: r + income - expense] * days_amount
+
+        return reduce(lambda i, f: f(i), funcs, rest)
 
     def spend_in_period_by_category(self, date_begin: str, date_end: str, category: str):
         self._check_column(category)
