@@ -36,6 +36,7 @@ class BaseAlgorithm:
         self.data = kwargs['data']  # обязательный аргумент
         self._meta = self._process_meta(kwargs.get('meta'))
         self._analytics_result = None
+        self._main_columns = self._process_main_columns(kwargs.get('main_columns', None))
 
     def _process_meta(self, meta):
         """
@@ -55,6 +56,41 @@ class BaseAlgorithm:
             raise SpendingAnalyticsAlgorithmError('meta data has incorrect format')
 
         return meta
+
+    def _process_main_columns(self, main_columns, use_dangerous=True):
+        """
+        главные столбцы - это столбцы, по которым мы делаем расчет
+
+        сейчас это: остаток, расход, доход
+
+        :param use_dangerous - дефолтный вариант, когда главные столбцы хардкодятся
+        :return: dict
+        """
+
+        if isinstance(main_columns, dict):
+            # передан маппинг - пологаем что он верный и пропускаем его
+            return main_columns
+
+        if callable(main_columns):
+            processed = main_columns()
+            if not isinstance(processed, dict):
+                raise SpendingAnalyticsAlgorithmError(
+                    f'error occurred during main columns processing, got result: {processed}'
+                )
+            return processed
+
+        if not main_columns:
+            if use_dangerous:
+                return {
+                    'expense': 'Расход тотал',
+                    'income': 'Приход',
+                    'rest': 'Остаток'
+                }
+            raise SpendingAnalyticsAlgorithmError(
+                f'error occurred during main columns processing, '
+                f'params conflict: use_dangerous = {use_dangerous},'
+                f'main_columns = {main_columns}'
+            )
 
     def get_analytics_results(self):
         if self._analytics_result:
@@ -121,9 +157,9 @@ class Linear(BaseAlgorithm):
         if today_data is None:
             raise SpendingAnalyticsAlgorithmError(f'Not found data for today: {today}')
 
-        expense = today_data['Расход тотал']  # TODO не хардкодить этот ключ
-        rest = today_data['Остаток']  # TODO не хардкодить этот ключ
-        income = today_data['Доход']  # TODO не хардкодить этот ключ
+        expense = today_data[self._main_columns['expense']]
+        rest = today_data[self._main_columns['rest']]
+        income = today_data[self._main_columns['income']]
 
         days_amount = (date_ - today_).days
         funcs = [lambda r: r + income - expense] * days_amount
