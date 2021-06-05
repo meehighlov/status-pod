@@ -2,8 +2,6 @@ from core.config import config
 from apps.handlers import handlers
 from telegram.ext import Updater
 
-from notifications.center import create_notifications
-
 
 # TODO Error handling
 
@@ -20,9 +18,6 @@ def init_bot():
 
     for handler in handlers:
         dispatcher.add_handler(handler)
-
-    # TODO use apscheduler?
-    create_notifications(updater.job_queue)
 
     # TODO use webhook
     updater.start_polling()
