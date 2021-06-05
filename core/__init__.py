@@ -19,6 +19,5 @@ def init_bot():
     for handler in handlers:
         dispatcher.add_handler(handler)
 
-    # TODO use webhook
     updater.start_polling()
     updater.idle()
