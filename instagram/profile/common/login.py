@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
-from app.config import config
+from instagram.app.config import config
 
 
 def login(browser):

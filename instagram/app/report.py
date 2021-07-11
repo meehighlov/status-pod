@@ -1,8 +1,8 @@
 from datetime import datetime
 from functools import partial
 
-from app.config import config
-from app.exceptions import AppError
+from instagram.app.config import config
+from instagram.app.exceptions import AppError
 
 
 def save_report_as_txt(path: str, report: dict):
