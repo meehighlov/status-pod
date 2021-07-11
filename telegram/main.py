@@ -1,5 +1,5 @@
-from core import init_bot
-from persistant.db import init_db
+from telegram.core import init_bot
+from telegram.persistant.db import init_db
 
 
 # TODO logging!
