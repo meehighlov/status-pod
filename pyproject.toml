@@ -6,6 +6,8 @@ authors = ["i.mikhailov"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+selenium = "^3.141.0"
+python-dotenv = "^0.18.0"
 
 [tool.poetry.dev-dependencies]
 
