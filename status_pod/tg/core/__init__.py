@@ -1,5 +1,5 @@
-from core.config import config
-from apps.handlers import handlers
+from status_pod.app import config
+from status_pod.tg.apps.handlers import handlers
 from telegram.ext import Updater
 
 
