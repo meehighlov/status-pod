@@ -1,5 +1,5 @@
 from selenium import webdriver
-from status_pod.app.config import config
+from status_pod.app import config
 
 
 chrome = webdriver.Chrome(executable_path=config.CHROME_DRIVER_PATH)
