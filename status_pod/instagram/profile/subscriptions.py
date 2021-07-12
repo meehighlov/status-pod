@@ -1,6 +1,6 @@
-from instagram.app.report import save_report
-from instagram.profile.common.actions import open_profile, get_users_info, close_window_with_users_list
-from instagram.profile.common.login import login, close_popups_after_login
+from status_pod.instagram.app.report import save_report
+from status_pod.instagram.profile.common.actions import open_profile, get_users_info, close_window_with_users_list
+from status_pod.instagram.profile.common.login import login, close_popups_after_login
 
 
 def subscribtions_info(browser, result_path: str):  # noqa

@@ -2,7 +2,7 @@ import sqlite3
 from collections import namedtuple
 from functools import wraps
 
-from telegram.core import config
+from status_pod.app import config
 
 
 #TODO make things better with that

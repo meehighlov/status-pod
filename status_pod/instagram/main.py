@@ -1,9 +1,9 @@
 import signal
 
-from instagram.app.browser import chrome
+from status_pod.instagram.app.browser import chrome
 from status_pod.app.config import config
-from instagram.app.exceptions import TimeoutAppError
-from instagram.profile.subscriptions import subscribtions_info
+from status_pod.instagram.app.exceptions import TimeoutAppError
+from status_pod.instagram.profile.subscriptions import subscribtions_info
 
 
 def timeout_handler(signum, frame):

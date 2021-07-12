@@ -1,4 +1,4 @@
-from telegram.apps.youtube.functions import get_audio_by_url_from_youtube
+from status_pod.tg.apps.youtube.functions import get_audio_by_url_from_youtube
 
 
 def get_audio_by_url(update, context):

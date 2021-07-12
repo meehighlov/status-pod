@@ -8,6 +8,8 @@ authors = ["i.mikhailov"]
 python = "^3.9"
 selenium = "^3.141.0"
 python-dotenv = "^0.18.0"
+python-telegram-bot = "^13.7"
+youtube_dl = "^2021.6.6"
 
 [tool.poetry.dev-dependencies]
 

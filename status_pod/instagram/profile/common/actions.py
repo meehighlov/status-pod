@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 
 from status_pod.app.config import config
-from instagram.app.meta import SubscriptionInfo
+from status_pod.instagram.app.meta import SubscriptionInfo
 
 
 def open_profile(browser):
