@@ -1,7 +1,7 @@
 import signal
 
 from instagram.app.browser import chrome
-from instagram.app.config import config
+from status_pod.app.config import config
 from instagram.app.exceptions import TimeoutAppError
 from instagram.profile.subscriptions import subscribtions_info
 
