@@ -1,7 +1,7 @@
 from telegram.ext import CommandHandler
 
-from apps.commands_list import get_list_of_commands
-from apps.youtube.handlers import get_audio_by_url
+from telegram.apps.commands_list import get_list_of_commands
+from telegram.apps.youtube.handlers import get_audio_by_url
 
 
 def start_command(update, context):

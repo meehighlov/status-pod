@@ -19,6 +19,11 @@ class Config:
     INSTAGRAM_URL = cast_to(str)  # noqa
     TIMEOUT_FOR_INSTA_TASK_EXECUTION_SEC = cast_to(int) # noqa
 
+    USER_NAME = cast_to(str)
+    TOKEN = cast_to(str)
+    MY_CHAT_ID = cast_to(str)
+    DB_NAME = cast_to(str)
+
     def __init__(self, **kwargs):
         for var, raw_value in kwargs.items():
             if hasattr(self, var):

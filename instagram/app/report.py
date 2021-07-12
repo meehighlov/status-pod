@@ -1,7 +1,7 @@
 from datetime import datetime
 from functools import partial
 
-from instagram.app.config import config
+from status_pod.app.config import config
 from instagram.app.exceptions import AppError
 
 
