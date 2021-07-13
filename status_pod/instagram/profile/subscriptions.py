@@ -3,7 +3,7 @@ from status_pod.instagram.profile.common.actions import open_profile, get_users_
 from status_pod.instagram.profile.common.login import login, close_popups_after_login
 
 
-def subscribtions_info(browser, result_path: str):  # noqa
+def report_subscribtions_info(browser, result_path: str):  # noqa
     with browser:
         login(browser)
         close_popups_after_login(browser)
