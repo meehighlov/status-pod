@@ -1,3 +1,4 @@
+import time
 from typing import Set
 
 from selenium.webdriver.common.action_chains import ActionChains
@@ -7,6 +8,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from status_pod.app.config import config
 from status_pod.instagram.profile.meta import SubscriptionInfo
+
+
+WAIT_FOR_RETURNING_USERS_DATA_FROM_SERVER_SEC = 1
 
 
 def open_profile(browser):
@@ -31,11 +35,13 @@ def fetch_nicknames_from_list(browser, users_amount, window_with_list) -> Set[st
     wait.until(lambda p: p.find_element(By.TAG_NAME, value='li'))
 
     users_meta = []
+    action = ActionChains(browser)
+    action.send_keys([Keys.TAB, Keys.TAB]).perform()
     while len(users_meta) < users_amount:
-        action = ActionChains(browser)
-        action.send_keys([Keys.TAB] * 2).perform()
-
+        action.reset_actions()
+        action.send_keys(Keys.PAGE_DOWN).perform()
         wait.until(lambda p: p.find_element(By.TAG_NAME, value='li'))
+        time.sleep(WAIT_FOR_RETURNING_USERS_DATA_FROM_SERVER_SEC)
         users_meta = window_with_list.find_elements(By.TAG_NAME, value='li')
 
         print('found:', len(users_meta), 'done:', f'{round((len(users_meta) / users_amount) * 100, 1)}%')
