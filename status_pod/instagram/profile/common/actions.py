@@ -84,5 +84,7 @@ def get_users_info(browser, who: str):
 
 
 def close_window_with_users_list(browser):
-    close_button = browser.find_element(By.CLASS_NAME, value='wpO6b')
-    ActionChains(browser).click(close_button).perform()
+    # на момент нажатия на клавишу esc мы должны находиться в
+    # контексте окна с подписками/подписчиками
+
+    ActionChains(browser).send_keys(Keys.ESCAPE).perform()
