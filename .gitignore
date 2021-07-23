@@ -133,3 +133,6 @@ dmypy.json
 
 # mac OS stuff
 .DS_Store
+
+# specific project files
+report.txt

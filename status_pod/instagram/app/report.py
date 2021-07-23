@@ -29,6 +29,9 @@ def save_report(*args, fmt='txt', **kwargs):
     :return:
     """
 
+    # временно фиксируем название файла, так как оно указывается в гитигнор
+    assert kwargs['path'] == 'report.txt'
+
     if args:
         raise AppError(message='Positional arguments are not supported')
 
