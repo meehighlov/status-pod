@@ -83,8 +83,9 @@ def get_users_info(browser, who: str):
     )
 
 
-def close_window_with_users_list(browser):
+def close_context_window(browser):
     # на момент нажатия на клавишу esc мы должны находиться в
-    # контексте окна с подписками/подписчиками
+    # контексте окна, которое хотим закрыть
+    # (aka должен быть выделен любой элемент окна либо окно должно быть выбрано)
 
     ActionChains(browser).send_keys(Keys.ESCAPE).perform()

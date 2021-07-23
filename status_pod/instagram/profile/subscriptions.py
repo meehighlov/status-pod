@@ -1,5 +1,5 @@
 from status_pod.instagram.app.report import save_report
-from status_pod.instagram.profile.common.actions import open_profile, get_users_info, close_window_with_users_list
+from status_pod.instagram.profile.common.actions import open_profile, get_users_info, close_context_window
 from status_pod.instagram.profile.common.login import login, close_popups_after_login
 
 
@@ -9,9 +9,9 @@ def report_subscribtions_info(browser, result_path: str):  # noqa
         close_popups_after_login(browser)
         open_profile(browser)
         f_i = get_users_info(browser, who='follows_me')
-        close_window_with_users_list(browser)
+        close_context_window(browser)
         s_i = get_users_info(browser, who='i_am_follow')
-        close_window_with_users_list(browser)
+        close_context_window(browser)
 
         f = f_i.nicknames
         s = s_i.nicknames
