@@ -3,14 +3,14 @@ from datetime import datetime, timedelta
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
-from status_pod.instagram.profile.common import login, close_popups_after_login
+from status_pod.instagram.profile.common.login import login, close_popups_after_login
 
 
 
 def get_posts_for_current_context(browser):
     post_classes = {
-        'single': '_8Rm4L.bLWKA M9sTE.L_LMM SgTZ1.ePUX4',
-        'carousel': '_8Rm4L.bLWKA M9sTE.L_LMM.SgTZ1.Tgarh.ePUX4'
+        'single': '_8Rm4L.bLWKA.M9sTE.h0YNM.SgTZ1',
+        'carousel': '_8Rm4L.bLWKA.M9sTE.h0YNM.SgTZ1.Tgarh'
     }
 
     return [
@@ -29,7 +29,7 @@ def open_feed(browser):
 
 
 def get_post_owner_name(post):
-    return ''
+    return post.find_element(By.CLASS_NAME, value='sqdOP.yWX7d._8A5w5.ZIAjV').text
 
 
 def first_comment_is_written_by_post_owner(post):
@@ -48,12 +48,13 @@ def notify():
     pass
 
 
-def scroll_down_feed():
+def scroll_down_feed(browser):
     pass
 
 
 def create_post_hash(post):
     post_owner = get_post_owner_name(post)
+    print(post_owner)
     post_date = get_post_date(post)
 
     return hash(post_owner + post_date)
