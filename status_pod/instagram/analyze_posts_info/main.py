@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
-from instagram.common.login import login, close_popups_after_login
+from status_pod.instagram.profile.common import login, close_popups_after_login
 
 
 
