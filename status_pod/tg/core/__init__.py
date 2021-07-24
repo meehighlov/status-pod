@@ -1,4 +1,4 @@
-from status_pod.app import config
+from status_pod.app.config import config
 from status_pod.tg.apps.handlers import handlers
 from telegram.ext import Updater
 
