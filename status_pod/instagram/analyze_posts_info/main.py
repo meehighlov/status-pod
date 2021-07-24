@@ -1,16 +1,31 @@
 from datetime import datetime, timedelta
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
 
-def get_posts_for_current_context():
-    return []
+from instagram.common.login import login, close_popups_after_login
+
+
+
+def get_posts_for_current_context(browser):
+    post_classes = {
+        'single': '_8Rm4L.bLWKA M9sTE.L_LMM SgTZ1.ePUX4',
+        'carousel': '_8Rm4L.bLWKA M9sTE.L_LMM.SgTZ1.Tgarh.ePUX4'
+    }
+
+    return [
+        *browser.find_elements(By.CLASS_NAME, value=post_classes['single']),
+        *browser.find_elements(By.CLASS_NAME, value=post_classes['carousel'])
+    ]
 
 
 def get_post_date(post):
     return ''
 
 
-def open_feed():
-    pass
+def open_feed(browser):
+    login(browser)
+    close_popups_after_login(browser)
 
 
 def get_post_owner_name(post):
@@ -68,7 +83,7 @@ def analyze_posts(browser):
 
             if has_comment_triggers(comment):
                 notify()
-            
+
             post_date = get_post_date(post)
 
         scroll_down_feed(browser)
