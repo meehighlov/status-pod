@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
 
 from status_pod.instagram.profile.common.login import login, close_popups_after_login
@@ -11,15 +12,7 @@ COMMENT_CLASS = 'QzzMF.Igw0E.IwRSH.eGOV_.vwCYk'
 
 
 def get_posts_for_current_context(context):
-    post_classes = {
-        'single': '_8Rm4L.bLWKA.M9sTE.h0YNM.SgTZ1',
-        'carousel': '_8Rm4L.bLWKA.M9sTE.h0YNM.SgTZ1.Tgarh'
-    }
-
-    return [
-        *context.find_elements(By.CLASS_NAME, value=post_classes['single']),
-        *context.find_elements(By.CLASS_NAME, value=post_classes['carousel'])
-    ]
+    return context.find_elements(By.TAG_NAME, value='article')
 
 
 def get_post_date(post) -> datetime:
@@ -94,8 +87,11 @@ def create_post_hash(post):
     return hash(post_owner + str(post_date))
 
 
-def get_main_layout(browser):
-    return browser.find_element(By.CLASS_NAME, value='cGcGK')
+def get_main_layout(browser) -> WebElement:
+    return browser.find_element(
+        By.XPATH,
+        value='/html/body/div[1]/div/div/section/main/section/div/div[2]'
+    )
 
 
 def analyze_posts_(browser):
