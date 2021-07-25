@@ -11,3 +11,7 @@ class AppError(Exception):
 
 class TimeoutAppError(AppError):
     message = 'Time of a task execution is up'
+
+
+class HTMLAttributeNoFoundAppError(AppError):
+    message = 'HTML attribute could not be parsed'

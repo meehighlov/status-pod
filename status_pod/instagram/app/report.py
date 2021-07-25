@@ -2,7 +2,7 @@ from datetime import datetime
 from functools import partial
 
 from status_pod.app.config import config
-from status_pod.instagram.app.exceptions import AppError
+from status_pod.app.exceptions import AppError
 
 
 def save_report_as_txt(path: str, report: dict):

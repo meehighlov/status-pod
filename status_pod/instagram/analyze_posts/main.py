@@ -1,26 +1,31 @@
 from datetime import datetime, timedelta
 
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 from status_pod.instagram.profile.common.login import login, close_popups_after_login
 
 
+COMMENT_CLASS = 'QzzMF.Igw0E.IwRSH.eGOV_.vwCYk'
 
-def get_posts_for_current_context(browser):
+
+def get_posts_for_current_context(context):
     post_classes = {
         'single': '_8Rm4L.bLWKA.M9sTE.h0YNM.SgTZ1',
         'carousel': '_8Rm4L.bLWKA.M9sTE.h0YNM.SgTZ1.Tgarh'
     }
 
     return [
-        *browser.find_elements(By.CLASS_NAME, value=post_classes['single']),
-        *browser.find_elements(By.CLASS_NAME, value=post_classes['carousel'])
+        *context.find_elements(By.CLASS_NAME, value=post_classes['single']),
+        *context.find_elements(By.CLASS_NAME, value=post_classes['carousel'])
     ]
 
 
-def get_post_date(post):
-    return ''
+def get_post_date(post) -> datetime:
+    elem_with_dt = post.find_element(By.CLASS_NAME, value='_1o9PC.Nzb55')
+    dt: str = elem_with_dt.get_attribute('datetime')
+    return datetime.strptime(dt, '%Y-%m-%dT%H:%S:%f.000Z')  # TODO set format as variable
 
 
 def open_feed(browser):
@@ -32,12 +37,42 @@ def get_post_owner_name(post):
     return post.find_element(By.CLASS_NAME, value='sqdOP.yWX7d._8A5w5.ZIAjV').text
 
 
-def first_comment_is_written_by_post_owner(post):
+def get_first_comment_as_element(post):
+    return post.find_element(By.CLASS_NAME, value=COMMENT_CLASS)
+
+
+def has_post_comments(post):
+    try:
+        post.find_element(By.CLASS_NAME, value=COMMENT_CLASS)
+    except NoSuchElementException:
+        return False
     return True
 
 
-def get_first_comment(post):
-    return ''
+def get_comment_owner_name(comment) -> str:
+    return comment.find_element(By.CLASS_NAME, value='FPmhX.notranslate.MBL3Z').text
+
+
+def get_comment_content(post) -> str:
+    comment = get_first_comment_as_element(post)
+    button_more_class = 'sXUSN'
+
+    # ищем по finds так как кнопки "еще" может не быть, если коммент короткий
+    button_more = comment.find_elements(By.CLASS_NAME, value=button_more_class)
+    if button_more:
+        # разворачиваем коммент
+        button_more[0].click()
+
+    content = comment.find_element(By.CLASS_NAME, value='_8Pl3R').text
+
+    return content
+
+
+def is_first_comment_written_by_post_owner(post):
+    comment_e = get_first_comment_as_element(post)
+    co = get_comment_owner_name(comment_e)
+    po = get_post_owner_name(post)
+    return co == po
 
 
 def has_comment_triggers(comment: str):
@@ -54,21 +89,26 @@ def scroll_down_feed(browser):
 
 def create_post_hash(post):
     post_owner = get_post_owner_name(post)
-    print(post_owner)
     post_date = get_post_date(post)
 
-    return hash(post_owner + post_date)
+    return hash(post_owner + str(post_date))
 
 
-def analyze_posts(browser):
+def get_main_layout(browser):
+    return browser.find_element(By.CLASS_NAME, value='cGcGK')
+
+
+def analyze_posts_(browser):
     open_feed(browser)
 
     post_date = datetime.utcnow()  # temporary
     edge_date = post_date + timedelta(days=1)  # temporary
     viewed_posts = set()
 
+    stories_and_posts_pipeline = get_main_layout(browser)
+
     while post_date < edge_date:
-        posts = get_posts_for_current_context(browser)
+        posts = get_posts_for_current_context(stories_and_posts_pipeline)
         for post in posts:
 
             post_hash = create_post_hash(post)
@@ -77,10 +117,13 @@ def analyze_posts(browser):
 
             viewed_posts.add(post_hash)
 
-            if not first_comment_is_written_by_post_owner(post):
+            if not has_post_comments(post):
                 continue
 
-            comment = get_first_comment(post)
+            if not is_first_comment_written_by_post_owner(post):
+                continue
+
+            comment = get_comment_content(post)
 
             if has_comment_triggers(comment):
                 notify()
@@ -88,3 +131,8 @@ def analyze_posts(browser):
             post_date = get_post_date(post)
 
         scroll_down_feed(browser)
+
+
+def analyze_posts(browser):
+    with browser:
+        analyze_posts_(browser=browser)
