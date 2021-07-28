@@ -20,7 +20,7 @@ from status_pod.instagram.profile.common.login import login, close_popups_after_
 COMMENT_CLASS = 'QzzMF.Igw0E.IwRSH.eGOV_.vwCYk'
 
 
-def suppress_interaction_exceptions(return_this_on_suppress):
+def suppress_interaction_exceptions(default_value):
     def suppress_interaction_exceptions_wrapper(f):
         @wraps(f)
         def suppressor(*args, **kwargs):
@@ -29,7 +29,7 @@ def suppress_interaction_exceptions(return_this_on_suppress):
             except (NoSuchElementException,
                     StaleElementReferenceException,
                     ElementClickInterceptedException):
-                return return_this_on_suppress
+                return default_value
         return suppressor
     return suppress_interaction_exceptions_wrapper
 
@@ -43,7 +43,7 @@ def get_posts_for_current_context(context):
     return context.find_elements(By.TAG_NAME, value='article')
 
 
-@suppress_interaction_exceptions(return_this_on_suppress=datetime.utcnow() + timedelta(days=1))
+@suppress_interaction_exceptions(default_value=datetime.utcnow())
 def get_post_date(post) -> datetime:
     elem_with_dt = post.find_element(By.CLASS_NAME, value='_1o9PC.Nzb55')
     dt: str = elem_with_dt.get_attribute('datetime')
@@ -55,7 +55,7 @@ def open_feed(browser):
     close_popups_after_login(browser)
 
 
-@suppress_interaction_exceptions(return_this_on_suppress='post_owner')  # TODO make random default name
+@suppress_interaction_exceptions(default_value='post_owner')  # TODO make random default name
 def get_post_owner_name(post):
     return post.find_element(By.CLASS_NAME, value='sqdOP.yWX7d._8A5w5.ZIAjV').text
 
@@ -64,7 +64,7 @@ def get_first_comment_as_element(post):
     return post.find_element(By.CLASS_NAME, value=COMMENT_CLASS)
 
 
-@suppress_interaction_exceptions(return_this_on_suppress=False)
+@suppress_interaction_exceptions(default_value=False)
 def has_post_comments(post):
     try:
         post.find_element(By.CLASS_NAME, value=COMMENT_CLASS)
@@ -73,7 +73,7 @@ def has_post_comments(post):
     return True
 
 
-@suppress_interaction_exceptions(return_this_on_suppress='comment_owner')
+@suppress_interaction_exceptions(default_value='comment_owner')
 def get_comment_owner_name(comment) -> str:
     return comment.find_element(By.CLASS_NAME, value='FPmhX.notranslate.MBL3Z').text
 
@@ -94,7 +94,7 @@ def try_get_text_of_stale_element(
     return default_text
 
 
-@suppress_interaction_exceptions(return_this_on_suppress='')
+@suppress_interaction_exceptions(default_value='')
 def get_comment_content(post) -> str:
     comment = get_first_comment_as_element(post)
     button_more_class = 'sXUSN'
@@ -114,7 +114,7 @@ def get_comment_content(post) -> str:
     return content
 
 
-@suppress_interaction_exceptions(return_this_on_suppress=False)
+@suppress_interaction_exceptions(default_value=False)
 def is_first_comment_written_by_post_owner(post):
     comment_e = get_first_comment_as_element(post)
     co = get_comment_owner_name(comment_e)
@@ -123,6 +123,8 @@ def is_first_comment_written_by_post_owner(post):
 
 
 def has_comment_triggers(comment: str):
+    # мб заюзть генетический алгоритм?
+    # либо просто по набору слов сопоставлять
     return True
 
 
@@ -141,18 +143,9 @@ def create_post_hash(post):
     return hash(post_owner + str(post_date))
 
 
-def get_main_layout(browser) -> WebElement:
-    return browser.find_element(
-        By.XPATH,
-        value='/html/body/div[1]/div/div/section/main/section/div/div[2]'
-    )
-
-
 def analyze_posts_(browser):
     open_feed(browser)
 
-    post_date = datetime.utcnow()  # temporary
-    edge_date = post_date + timedelta(days=1)  # temporary
     viewed_posts = set()
 
     posts_amount_to_check = config.MAX_INSTA_POSTS_AMOUNT_FOR_ANALYSYS
@@ -177,9 +170,7 @@ def analyze_posts_(browser):
             if has_comment_triggers(comment):
                 notify()
 
-            post_date = get_post_date(post)
-
-            print('already viewed:', len(viewed_posts))
+            print('owner:', get_post_owner_name(post))
 
         scroll_down_feed(browser)
 
