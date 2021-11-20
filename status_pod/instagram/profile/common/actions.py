@@ -37,7 +37,7 @@ def fetch_nicknames_from_list(browser, users_amount, window_with_list) -> Set[st
     users_meta = []
     action = ActionChains(browser)
     action.send_keys([Keys.TAB, Keys.TAB]).perform()
-    while len(users_meta) < users_amount:
+    while len(users_meta) < users_amount - 1:
         action.reset_actions()
         action.send_keys(Keys.PAGE_DOWN).perform()
         wait.until(lambda p: p.find_element(By.TAG_NAME, value='li'))
