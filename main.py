@@ -1,5 +1,5 @@
 from status_pod.instagram.main import launch
-
+from dataclasses import dataclass
 from status_pod.instagram.analyze_posts.main import analyze_posts
 from status_pod.instagram.app.browser import chrome
 
