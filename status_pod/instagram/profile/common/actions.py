@@ -58,7 +58,7 @@ def find_subs_button_by_name(browser, name: str):
     links = browser.find_elements(By.TAG_NAME, value='a')
 
     for link in links:
-        if link.text.endswith(name) or link.text.endswith(name):
+        if link.text.endswith(name):
             return link
 
     return None
