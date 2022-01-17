@@ -2,7 +2,7 @@ from datetime import datetime
 from functools import partial
 
 from status_pod.app.config import config
-from status_pod.instagram.app.exceptions import AppError
+from status_pod.app.exceptions import AppError
 
 
 def save_report_as_txt(path: str, report: dict):
@@ -19,10 +19,9 @@ def save_report_as_txt(path: str, report: dict):
                 f.write(f'{spaces}{line}\n')
 
 
-def save_report(*args, fmt='txt', **kwargs):
+def save_report(*, fmt='txt', **kwargs):
     """
     :param fmt: формат
-    :param args:
     :param kwargs:
         :param path: куда сложить отчет
         :param report: данные отчета
@@ -31,9 +30,6 @@ def save_report(*args, fmt='txt', **kwargs):
 
     # временно фиксируем название файла, так как оно указывается в гитигнор
     assert kwargs['path'] == 'report.txt'
-
-    if args:
-        raise AppError(message='Positional arguments are not supported')
 
     handler = {
         'txt': partial(save_report_as_txt, **kwargs)

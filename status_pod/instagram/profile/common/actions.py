@@ -37,7 +37,7 @@ def fetch_nicknames_from_list(browser, users_amount, window_with_list) -> Set[st
     users_meta = []
     action = ActionChains(browser)
     action.send_keys([Keys.TAB, Keys.TAB]).perform()
-    while len(users_meta) < users_amount:
+    while len(users_meta) < users_amount - 1:
         action.reset_actions()
         action.send_keys(Keys.PAGE_DOWN).perform()
         wait.until(lambda p: p.find_element(By.TAG_NAME, value='li'))
@@ -50,19 +50,29 @@ def fetch_nicknames_from_list(browser, users_amount, window_with_list) -> Set[st
     return set(elem.text for elem in user_nicknames)
 
 
+def find_subs_button_by_name(browser, name: str):
+    """
+    :params: name: возможные значения followers, following
+    """
+
+    links = browser.find_elements(By.TAG_NAME, value='a')
+
+    for link in links:
+        if link.text.endswith(name):
+            return link
+
+    return None
+
+
 def get_users_info(browser, who: str):
     user_list_types = {
         'follows_me': 'followers',  # TODO switch locale - now it depends on locale
         'i_am_follow': 'following'  # TODO switch locale - now it depends on locale
     }
     wait = WebDriverWait(browser, timeout=config.MAX_WAIT_ELEMENT_APPEARANCE_SEC)
-    wait.until(lambda p: p.find_element(By.CLASS_NAME, value='zwlfE'))
-    profile_main_buttons = browser.find_element(By.CLASS_NAME, value='zwlfE')
+    time.sleep(3)  # TODO use wait
 
-    users_number_as_button = profile_main_buttons.find_element(
-        By.PARTIAL_LINK_TEXT,
-        value=user_list_types[who]
-    )
+    users_number_as_button = find_subs_button_by_name(browser, user_list_types[who])
 
     users_amount = get_users_amount(users_number_as_button.text)
     users_number_as_button.click()
