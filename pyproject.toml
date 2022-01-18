@@ -11,6 +11,8 @@ python-dotenv = "^0.18.0"
 python-telegram-bot = "^13.7"
 youtube_dl = "^2021.6.6"
 fastapi = "^0.66.0"
+opencv-python = "^4.5.5"
+pytesseract = "^0.3.8"
 
 [tool.poetry.dev-dependencies]
 
