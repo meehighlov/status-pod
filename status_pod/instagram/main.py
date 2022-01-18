@@ -10,7 +10,7 @@ def timeout_handler(signum, frame):
     raise TimeoutAppError()
 
 
-def launch(*args, **kwargs):
+def subs(*args, **kwargs):
     signal.signal(signal.SIGALRM, timeout_handler)
     signal.alarm(config.TIMEOUT_FOR_INSTA_TASK_EXECUTION_SEC)
     report_subscribtions_info(chrome, result_path=config.REPORT_PATH)
@@ -18,4 +18,4 @@ def launch(*args, **kwargs):
 
 
 if __name__ == '__main__':
-    launch()
+    subs()
