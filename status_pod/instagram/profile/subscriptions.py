@@ -58,3 +58,5 @@ def report_subscribtions_info(browser, result_path: str):  # noqa
         }
 
     save_report(path=result_path, report=report, fmt='txt')
+
+    return report
