@@ -15,6 +15,7 @@ class Config:
     CHROME_DRIVER_PATH = cast_to(str)
     REPORT_PATH = cast_to(str)
     HEADLESS_MODE = cast_to(bool)
+    SELENOID_URL = cast_to(str)
 
     INSTAGRAM_LOGIN = cast_to(str) # noqa
     INSTAGRAM_PASSWORD = cast_to(str)  # noqa
