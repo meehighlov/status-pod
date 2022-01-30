@@ -14,10 +14,7 @@ WAIT_FOR_RETURNING_USERS_DATA_FROM_SERVER_SEC = 1
 
 
 def open_profile(browser):
-    wait = WebDriverWait(browser, timeout=config.MAX_WAIT_ELEMENT_APPEARANCE_SEC)
-    wait.until(lambda p: p.find_element(By.CLASS_NAME, value='gmFkV'))
-    profile_icon_as_button = browser.find_element(By.CLASS_NAME, value='gmFkV')
-    profile_icon_as_button.click()
+    browser.get('https://www.instagram.com/ivamnikhailov/')
 
 
 def get_users_amount(link_text: str):
